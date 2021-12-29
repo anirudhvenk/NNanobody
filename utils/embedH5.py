@@ -124,18 +124,13 @@ def manifest(out_filename,batchnum,prefix):
             f.write('.'.join(['/'.join([prefix]+out_filename.split('/')[-2:]),'batch'+str(i+1)])+'\n')
             
 
-def data_embed(basedir, outdir, batchsize):
+def data_embed(infile, labelfile, outfile, batchsize):
     mapper = {}
-    with open('../mapper','r') as f:
+    with open('./mapper','r') as f:
         for x in f:
             line = x.strip().split()
             word = line[0]
             vec = [float(item) for item in line[1:]]
             mapper[word] = vec
-    infile = f'{basedir}/data.tsv'
-    labelfile = f'{basedir}/data.target'
-    outfile = f'{outdir}/embedded.h5'
     
     convert(infile,labelfile,outfile,mapper,20,batchsize,'label','data',True)
-    
-data_embed('../regression/data/Full Regression', '.', 10000)
