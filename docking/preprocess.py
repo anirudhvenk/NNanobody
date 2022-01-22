@@ -3,7 +3,8 @@ Preprocess docking information for a single run.
 Usage:
     preprocess.py --folded_sequences=<folded_dir>
 """
-from cProfile import run
+import subprocess
+import shutil
 from docopt import docopt
 from Bio import SeqIO
 import os
@@ -76,6 +77,7 @@ def active_passive_to_ambig(active1, active2, out_dir, segid1='A', segid2='B'):
 
             f.write(') 2.0 2.0 0.0\n\n')
         
+
 if __name__ == '__main__':
     args = docopt(__doc__)
     folded_dir = args['--folded_sequences']
@@ -89,11 +91,13 @@ if __name__ == '__main__':
     
         if not os.path.exists(out_dir):
             os.mkdir(out_dir)
-            
+        
+        shutil.copy(protein_file, os.path.join(out_dir, 'protein1.pdb'))
+        shutil.copy(os.path.join(folded_dir, 'Ranibizumab_Cleaned_Concat.pdb'), os.path.join(out_dir, 'protein2.pdb'))
         os.mkdir('/home/ec2-user/software/runs/' + protein)
         generate_run_param(out_dir, protein)
         generate_unambig(out_dir)
         active_passive_to_ambig(active1, active2, out_dir)
         os.chdir(out_dir)
-        os.system('haddock2.4')
+        subprocess.call("/usr/bin/python /home/ec2-user/software/haddock2.4-2021-05/Haddock/RunHaddock.py", shell=True)
     
