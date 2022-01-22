@@ -10,6 +10,7 @@ from Bio import SeqIO
 import os
 import re
 import numpy as np
+import time
 
 def load_pdb(prot1):
     print(prot1)
@@ -31,7 +32,7 @@ def generate_run_param(out_dir, run_dir):
         f.write('UNAMBIG_TBL=unambig.tbl\n')
         f.write('HADDOCK_DIR=/home/ec2-user/software/haddock2.4-2021-05\n')
         f.write('N_COMP=2\n')
-        f.write(f'PDB_FILE1=protein1\n')
+        f.write(f'PDB_FILE1=protein1.pdb\n')
         f.write('PROT_SEGID_1=A\n')
         f.write(f'PDB_FILE2=protein2.pdb\n')
         f.write('PROT_SEGID_2=B\n')
@@ -100,5 +101,5 @@ if __name__ == '__main__':
         generate_unambig(out_dir)
         active_passive_to_ambig(active1, active2, out_dir)
         os.chdir(out_dir)
+        time.sleep(5)
         subprocess.call("/usr/bin/python /home/ec2-user/software/haddock2.4-2021-05/Haddock/RunHaddock.py", shell=True)
-    
