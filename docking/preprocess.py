@@ -30,10 +30,10 @@ def generate_run_param(out_dir, run_dir):
         f.write('AMBIG_TBL=ambig.tbl\n')
         f.write('UNAMBIG_TBL=unambig.tbl\n')
         f.write('HADDOCK_DIR=/home/ec2-user/software/haddock2.4-2021-05\n')
-        f.write('N_COMP=20\n')
-        f.write('PDB_FILE1=protein1.pdb\n')
+        f.write('N_COMP=2\n')
+        f.write(f'PDB_FILE1=protein1\n')
         f.write('PROT_SEGID_1=A\n')
-        f.write('PDB_FILE2=protein2.pdb\n')
+        f.write(f'PDB_FILE2=protein2.pdb\n')
         f.write('PROT_SEGID_2=B\n')
         f.write(f'PROJECT_DIR=/home/ec2-user/software/runs/{run_dir}\n') #run_dir = cdr3 sequence
         f.write('RUN_NUMBER=1\n')
