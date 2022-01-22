@@ -1,7 +1,7 @@
 """
 Preprocess docking information for a single run.
 Usage:
-    preprocess.py --folded_sequences=<folded_dir>
+    preprocess.py --folded_sequences=<folded_dir> --antigen=<antigen>
 """
 import subprocess
 import shutil
@@ -81,6 +81,7 @@ def active_passive_to_ambig(active1, active2, out_dir, segid1='A', segid2='B'):
 if __name__ == '__main__':
     args = docopt(__doc__)
     folded_dir = args['--folded_sequences']
+    antigen = args['--antigen']
     process_dir = os.getcwd()
     
     for protein in os.listdir(folded_dir):
@@ -93,7 +94,7 @@ if __name__ == '__main__':
             os.mkdir(out_dir)
         
         shutil.copy(protein_file, os.path.join(out_dir, 'protein1.pdb'))
-        shutil.copy(os.path.join(folded_dir, 'Ranibizumab_Cleaned_Concat.pdb'), os.path.join(out_dir, 'protein2.pdb'))
+        shutil.copy(antigen, os.path.join(out_dir, 'protein2.pdb'))
         os.mkdir('/home/ec2-user/software/runs/' + protein)
         generate_run_param(out_dir, protein)
         generate_unambig(out_dir)
