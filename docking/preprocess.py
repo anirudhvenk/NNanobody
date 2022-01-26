@@ -12,12 +12,19 @@ import os
 import numpy as np
 import time
 
+def clean_pdb(prot):
+    my_file = open(os.path.join(out_dir, prot), 'r')
+    content = my_file.readlines()
+    content[-2] = 'TER\n'
+    with open(os.path.join(out_dir, prot), 'w') as f:
+        f.write(''.join(content))
+
 def load_pdb(prot1, prot2, out_dir):
     # Get FASTA sequence to identify active residues
     with open(prot1, 'r') as pdb:
         for record in SeqIO.parse(pdb, 'pdb-atom'):
             fasta = record.seq
-    
+        
     parser = PDBParser()
     io = PDBIO()
     
@@ -28,6 +35,7 @@ def load_pdb(prot1, prot2, out_dir):
             
     io.set_structure(protein1_structure)
     io.save(os.path.join(out_dir, 'protein1.pdb'))
+    clean_pdb('protein1.pdb')
     
     protein2_structure = parser.get_structure('protein1', prot2)
     for model in protein2_structure:
@@ -36,6 +44,7 @@ def load_pdb(prot1, prot2, out_dir):
             
     io.set_structure(protein2_structure)
     io.save(os.path.join(out_dir, 'protein2.pdb'))
+    clean_pdb('protein2.pdb')
     
     cdr1 = np.arange(26, 39)
     cdr2 = np.arange(53, 70)
@@ -46,6 +55,7 @@ def load_pdb(prot1, prot2, out_dir):
 
 
 def generate_run_param(out_dir, run_dir):
+    # print(run_dir)
     with open(os.path.join(out_dir, 'run.param'), 'w') as f:
         f.write('AMBIG_TBL=ambig.tbl\n')
         f.write('UNAMBIG_TBL=unambig.tbl\n')
@@ -113,8 +123,8 @@ if __name__ == '__main__':
             os.mkdir(out_dir)
         
         active1, active2 = load_pdb(protein_file, antigen, out_dir)
-        os.mkdir('/home/ec2-user/software/runs/' + protein)
-        generate_run_param(out_dir, protein)
+        os.mkdir('/home/ec2-user/software/runs/' + protein.split('_')[0])
+        generate_run_param(out_dir, protein.split('_')[0])
         generate_unambig(out_dir)
         active_passive_to_ambig(active1, active2, out_dir)
         os.chdir(out_dir)
