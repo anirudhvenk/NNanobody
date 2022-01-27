@@ -6,7 +6,7 @@ for file in "/home/ec2-user/software/cns_solve_1.3/intel-x86_64bit-linux/source"
   [[ $file -nt $latest ]] && latest=$file
 done
 
-sed "s|^set CNSTMP=.*|set CNSTMP=${latest}|" /home/ec2-user/software/haddock2.4-2021-05/config.local 
+sed -i "s|^set CNSTMP=.*|set CNSTMP=${latest}|" /home/ec2-user/software/haddock2.4-2021-05/config.local 
 
 cd /home/ec2-user/software/haddock2.4-2021-05
 ./install.csh config.local
