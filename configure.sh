@@ -13,6 +13,3 @@ cd /home/ec2-user/software/haddock2.4-2021-05
 
 sed -i "s/^export.*/export HADDOCK HADDOCKTOOLS PYTHONPATH/" /home/ec2-user/software/haddock2.4-2021-05/haddock_configure.sh
 sed -i "14,17d" /home/ec2-user/software/haddock2.4-2021-05/haddock_configure.sh
-
-cd ../haddock2.4-2021-05
-source ./haddock_configure.sh
