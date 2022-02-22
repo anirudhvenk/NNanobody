@@ -1,5 +1,6 @@
 """
 Preprocess docking information for a single run.
+
 Usage:
     preprocess.py --folded_sequences=<folded_dir> --antigen=<antigen>
 """
@@ -13,13 +14,29 @@ import numpy as np
 import time
 
 def clean_pdb(prot):
+    """
+    clean_pdb parses through the PDB file in order to remove atoms that would cause issues in the docking process.
+
+    :param prot: Protein PDB file to parse and clean
+    """
+    
     my_file = open(os.path.join(out_dir, prot), 'r')
     content = my_file.readlines()
     content[-2] = 'TER\n'
     with open(os.path.join(out_dir, prot), 'w') as f:
-        f.write(''.join(content))
+        f.write(''.join(content)) # Write the PDB file out
+
 
 def load_pdb(prot1, prot2, out_dir):
+    """
+    load_pdb loads the PDB files, identifies their active residues, and writes them into the temp_params directory.
+    
+    :param prot1: First protein to be docked (nanobody PDB file)
+    :param prot2: Second protein to be docked (Ranibizumab, PDB file)
+    :param out_dir: Directory to store output (both proteins)
+    :return: Active residues of both proteins
+    """
+    
     # Get FASTA sequence to identify active residues
     with open(prot1, 'r') as pdb:
         for record in SeqIO.parse(pdb, 'pdb-atom'):
@@ -55,7 +72,14 @@ def load_pdb(prot1, prot2, out_dir):
 
 
 def generate_run_param(out_dir, run_dir):
-    # print(run_dir)
+    """
+    generate_run_param generates the run parameters for the HADDOCK run.
+    
+    :param out_dir: Directory containing all files for docking
+    :param run_dir: Directory to perform the docking run
+    """
+    
+    # Create run.param file
     with open(os.path.join(out_dir, 'run.param'), 'w') as f:
         f.write('AMBIG_TBL=ambig.tbl\n')
         f.write('UNAMBIG_TBL=unambig.tbl\n')
@@ -69,6 +93,12 @@ def generate_run_param(out_dir, run_dir):
         f.write('RUN_NUMBER=1\n')
 
 def generate_unambig(out_dir):
+    """
+    generate_unambig determines the unamibiguous residues of Ranibizumab and saves them to unambig.tbl
+    
+    :param out_dir: Directory containing all files for docking
+    """
+    
     with open(os.path.join(out_dir, 'unambig.tbl'), 'w') as f:
         f.write('! Molecule #2 gap(s) restraint(s)\n')
         f.write('assign (resid 34 and name CA and segid B) (resid 247 and name CA and segid B) 17.546 0.00 0.00\n')
@@ -79,6 +109,14 @@ def generate_unambig(out_dir):
         f.write('assign (resid 356 and name CA and segid B) (resid 247 and name CA and segid B) 40.087 0.00 0.00\n')
         
 def active_passive_to_ambig(active1, active2, out_dir, segid1='A', segid2='B'):
+    """
+    active_passive_to_ambig writes the active and passive residues of each protein into a .tbl file.
+    
+    :param active1: Active residues of first protein (nanobody)
+    :param active2: Active residues of second protein (Ranibizumab)
+    :param out_dir: Directory containing all files for docking
+    """
+    
     all1 = active1
     all2 = active2
 
